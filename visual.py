@@ -3,6 +3,8 @@ from tkinter import *
 from tkinter import ttk
 import tkinter as tk  
 from click import command
+from analizador_Lexico import lexico
+
 
 rojo="#A93226"
 Font="Arial"
@@ -13,11 +15,13 @@ largo=20
 
 
 class Visual():
+
+
     def __init__(self) -> None:
         #encabzado para tkinter
         self.raiz = Tk()
         self.Ventana_Principal()
-        
+        self.analizador_lexico = lexico()
 
     def comp(self):
         #Sirve como parte final para tkinter
@@ -75,10 +79,10 @@ class Visual():
         bttn_limpiar_log_errores= tk.Button(menu,width=largo, height=alto, text="Limpiar log de errores", font=Font, bg="khaki1",command=lambda: self.boton_Enviar(None))
         bttn_limpiar_log_errores.grid(row=2, column=5, sticky=NSEW)
 
-        bttn_Reporte_tokens= tk.Button(menu,width=largo, height=alto, text="Reporte de tokens", font=Font, bg="khaki1",command=lambda: self.boton_Enviar(None))
+        bttn_Reporte_tokens= tk.Button(menu,width=largo, height=alto, text="Reporte de tokens", font=Font, bg="khaki1",command=lambda: self.reporte_de_tokens(None))
         bttn_Reporte_tokens.grid(row=3, column=5, sticky=NSEW)
 
-        bttn_limpiar_log_tokens= tk.Button(menu,width=largo, height=alto, text="Limpiar log de tokens", font=Font, bg="khaki1",command=lambda: self.boton_Enviar(None))
+        bttn_limpiar_log_tokens= tk.Button(menu,width=largo, height=alto, text="Limpiar log de tokens", font=Font, bg="khaki1",command=lambda: self.limpiar(None))
         bttn_limpiar_log_tokens.grid(row=4, column=5, sticky=NSEW)
 
         bttn_Manual_Usuario= tk.Button(menu,width=largo, height=alto, text="Manual de usuario", font=Font, bg="khaki1",command=lambda: self.boton_Enviar(None))
@@ -95,6 +99,16 @@ class Visual():
     def boton_Enviar(self, event):
         msg = self.msgEntry.get()
         self.mensaje_usuario(msg, "Usuario")
+    
+    def reporte_de_tokens(self, event):
+        self.analizador_lexico.analizar()
+        self.analizador_lexico.genrarReporteToken()
+        print("Se genero el reporte de tokens")
+
+    def limpiar(self, event):
+        self.analizador_lexico = lexico()
+
+        
 
     def mensaje_usuario(self, msg, sender):
         if not msg:
@@ -117,7 +131,7 @@ class Visual():
             self.texto.see(END)
         else:
             bot_name = "Bot"
-            respuesta = self.readInfo(msg)
+            respuesta = self.leer_mensaje(msg)
             msg2 = f"{bot_name}: {respuesta}\n\n"
             self.texto.configure(state=NORMAL)
             self.texto.insert(END, msg2)
@@ -128,10 +142,12 @@ class Visual():
         if respuesta == 'ADIOS':
             self.raiz.destroy()
 
-    def readInfo(self,msg):
+    def leer_mensaje(self,msg):
+        self.analizador_lexico = lexico()
+        self.analizador_lexico.analizar()
         if msg != '':
-            #cadena = self.analisis_lex.entrada(msg)
-            return #cadena
+            cadena = anali_lexico.analizador(msg)
+            return cadena
 
     
 
